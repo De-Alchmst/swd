@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SWD</title>
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="tabs.css">
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="content">
+        <div class="tab-content active" id="home">
+          <h2>Home</h2>
+          <p>Welcome to our homepage! This is where you'll find the latest updates and featured content.</p>
+          <p>You can drag the tabs on the left to reorder them however you like.</p>
+        </div>
+
+        <div class="tab-content" id="about">
+          <h2>About Us</h2>
+          <p>Learn more about our company, our mission, and our team.</p>
+          <p>We've been serving customers since 2020 with dedication and expertise.</p>
+        </div>
+
+        <div class="tab-content" id="services">
+          <h2>Our Services</h2>
+          <p>We offer a wide range of professional services including:</p>
+          <p>Web development, design consultation, and technical support.</p>
+        </div>
+
+        <div class="tab-content" id="portfolio">
+          <h2>Portfolio</h2>
+          <p>Check out some of our recent work and successful projects.</p>
+          <p>We're proud of what we've accomplished for our clients.</p>
+        </div>
+
+        <div class="tab-content" id="contact">
+          <h2>Contact Us</h2>
+          <p>Get in touch with us for any inquiries or project discussions.</p>
+          <p>Email: info@example.com | Phone: (555) 123-4567</p>
+        </div>
+      </div>
+
+      <div class="tabs-container" id="tabsContainer">
+        <div class="tab active" draggable="true" data-tab="home">Home</div>
+        <div class="tab" draggable="true" data-tab="about">About</div>
+        <div class="tab" draggable="true" data-tab="services">Services</div>
+        <div class="tab" draggable="true" data-tab="portfolio">Portfolio</div>
+        <div class="tab" draggable="true" data-tab="contact">Contact</div>
+      </div>
+    </div>
+
+    <script src="tabs.js"></script>
+  </body>
+</html>
