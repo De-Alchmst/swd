@@ -28,6 +28,7 @@ function setupTabs() {
       if (!tab.classList.contains('dragging')) {
         switchTab(tab.getAttribute('data-tab'));
         currentTabIndex = index;
+        console.log(index)
       }
     });
 
@@ -152,10 +153,19 @@ function newTabElement(id) {
 
 function newTabContentElement(id) {
   const content = document.createElement('div');
+  const bg = document.createElement('div');
 
   content.className = 'tab-content';
   content.id        = `tab-${id}`;
-  content.innerHTML = `<h2>Tab ${id} Content</h2><p>This is the content for tab ${id}.</p>`;
+  content.appendChild(bg); 
+
+  bg.className = 'desktop-background';
+  bg.addEventListener('click', (e) => {
+    spawnWindow(
+      content,
+      `Tab ${id}`
+    );
+  });
 
   return content;
 }
@@ -173,6 +183,8 @@ function scrollUp() {
     currentTabIndex = tabsContainer.children.length - 2;
   }
 
+  console.log(currentTabIndex)
+
   switchTab(
     tabsContainer.children[currentTabIndex + 1].getAttribute('data-tab'));
 }
@@ -183,13 +195,21 @@ function scrollDown() {
 
   if (currentTabIndex === null) return;
 
-  if (currentTabIndex < tabsContainer.children.length - 1) {
+  if (currentTabIndex < tabsContainer.children.length - 2) {
     currentTabIndex++;
   } else {
-    currentTabIndex = 1; // +1 for the add button
+    currentTabIndex = 0;
   }
 
-  switchTab(tabsContainer.children[currentTabIndex].getAttribute('data-tab'));
+  switchTab(curTabData());
+}
+
+
+function curTabData() {
+  const tabsContainer = document.getElementById('tab-container');
+  console.log(tabsContainer.children[currentTabIndex+1].getAttribute('data-tab'), 
+    currentTabIndex)
+  return tabsContainer.children[currentTabIndex+1].getAttribute('data-tab')
 }
 
 
