@@ -242,7 +242,6 @@ function bindBgMenu(bg, content, tag) {
     }, {
       "name": "Kill",
       "action": () => {
-        console.log('Kill action triggered');
         enterSelectionMode(2, (x, y) => {
           killWindow(x, y, tag);
         });

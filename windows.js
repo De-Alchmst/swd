@@ -21,17 +21,28 @@ function spawnWindow(root, name, tag) {
   console.log(windows[tag])
 }
 
-function killWindow(x, y, tag) {
+
+function pointInWindow(x, y, w) {
+  return (w.x < x && w.x+w.width > x && w.y < y && w.y+w.height > y);
+}
+
+
+function applyWindowPos(x, y, tag, f) {
   const wins = windows[tag];
   if (!wins) return;
 
-  console.log(wins)
-
-  // from highest to lowest
+  // from highest index to lowest
   for (const w of wins.sort((a, b) => b.index-a.index)) {
-    if (w.x < x && w.x+w.width > x && w.y < y && w.y+w.height > y) {
-      w.close();
+    if (pointInWindow(x, y, w)) {
+      f(w)
       return;
     }
   }
+}
+
+
+function killWindow(x, y, tag) {
+  applyWindowPos(x, y, tag, (w) => {
+    w.close();
+  })
 }
