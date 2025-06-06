@@ -1,21 +1,26 @@
-.tabs-container {
-  width: 200px;
+#tabs-container {
   background-color: #2c3e50;
-  border-right: 1px solid #34495e;
 }
 
-.tab {
-  padding: 15px 20px;
+.tab, #tab-adder {
+  padding: .5rem .9rem;
   background-color: #34495e;
   color: white;
-  cursor: move;
   border-bottom: 1px solid #2c3e50;
   transition: background-color 0.2s;
   user-select: none;
   position: relative;
 }
 
-.tab:hover {
+.tab {
+  cursor: move;
+}
+
+#tab-adder {
+  cursor: pointer;
+}
+
+.tab:hover, #tab-adder:hover {
   background-color: #4a5f7a;
 }
 
@@ -25,20 +30,6 @@
 
 .tab.dragging {
   opacity: 0.5;
-  transform: rotate(2deg);
-}
-
-.tab.drag-over {
-  border-top: 3px solid #e74c3c;
-}
-
-.tab::before {
-  content: "⋮⋮";
-  position: absolute;
-  left: 5px;
-  color: #95a5a6;
-  font-size: 12px;
-  line-height: 1;
 }
 
 .tab-content {
