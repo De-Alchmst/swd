@@ -28,7 +28,6 @@ function setupTabs() {
       if (!tab.classList.contains('dragging')) {
         switchTab(tab.getAttribute('data-tab'));
         currentTabIndex = index;
-        console.log(index)
       }
     });
 
@@ -160,12 +159,7 @@ function newTabContentElement(id) {
   content.appendChild(bg); 
 
   bg.className = 'desktop-background';
-  bg.addEventListener('click', (e) => {
-    spawnWindow(
-      content,
-      `Tab ${id}`
-    );
-  });
+  bindBgMenu(bg, content);
 
   return content;
 }
@@ -183,7 +177,6 @@ function scrollUp() {
     currentTabIndex = tabsContainer.children.length - 2;
   }
 
-  console.log(currentTabIndex)
 
   switchTab(
     tabsContainer.children[currentTabIndex + 1].getAttribute('data-tab'));
@@ -207,8 +200,6 @@ function scrollDown() {
 
 function curTabData() {
   const tabsContainer = document.getElementById('tab-container');
-  console.log(tabsContainer.children[currentTabIndex+1].getAttribute('data-tab'), 
-    currentTabIndex)
   return tabsContainer.children[currentTabIndex+1].getAttribute('data-tab')
 }
 
@@ -238,6 +229,22 @@ function removeTab(index) {
   if (currentTabIndex == index) {
     switchTab(tabsContainer.children[1].getAttribute('data-tab'));
   }
+}
+
+function bindBgMenu(bg, content) {
+  addMouseListeners(bg, 2, [
+    {
+      "name": "New",
+      "action": () => {
+        spawnWindow(content, "Win");
+      }
+    }, {
+      "name": "Kill",
+      "action": () => {
+        console.log('Kill action triggered');
+      }
+    }
+  ]);
 }
 
 

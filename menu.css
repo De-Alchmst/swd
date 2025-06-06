@@ -1,0 +1,33 @@
+.desktop-menu {
+  position: fixed;
+  background: white;
+  border: 1px solid #000;
+  border-top: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  min-width: 6em;
+  display: block;
+  z-index: 1000;
+  align-items: center;
+  text-align: center;
+}
+
+.desktop-menu-item {
+  padding: .3em .5em;
+  cursor: pointer;
+  font-size: 1em;
+  color: #333;
+  border-top: 1px solid #000;
+  align-items: center;
+  text-align: center;
+  transition: background-color 0.1s;
+}
+
+.desktop-menu-item:hover {
+  background-color: #0066cc;
+  color: white;
+}
+
+.desktop-menu-item.highlighted {
+  background-color: #0066cc;
+  color: white;
+}
