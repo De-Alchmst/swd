@@ -9,7 +9,7 @@ html, body {
   background: white;
   overflow: hidden;
 
-  .content {
+  #tab-content-container {
     width: 100%;
   }
 }

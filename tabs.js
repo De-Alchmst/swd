@@ -1,24 +1,25 @@
-function initTabs() {
+let tabCounter = 0;
+
+function setupTabs() {
   let draggedElement = null;
   let draggedIndex = null;
 
   const tabsContainer = document.getElementById('tabs-container');
   const tabs = tabsContainer.querySelectorAll('.tab');
   const tabContents = document.querySelectorAll('.tab-content');
-  const tabAdder = document.getElementById('tab-adder');
 
-  let tabCounter = tabs.length;
+  tabCounter = tabs.length;
 
 
   // Add event listeners to each tab
   tabs.forEach((tab, index) => {
+
     // Click to switch tabs
     tab.addEventListener('click', (e) => {
       if (!tab.classList.contains('dragging')) {
-        switchTab(tab.dataset.tab);
+        switchTab(tab.getAttribute('data-tab'));
       }
     });
-
 
     // Drag start
     tab.addEventListener('dragstart', (e) => {
@@ -37,13 +38,11 @@ function initTabs() {
       draggedIndex = null;
     });
 
-
     // Drag over
     tab.addEventListener('dragover', (e) => {
       e.preventDefault();
       e.dataTransfer.dropEffect = 'move';
     });
-
 
     // Drag enter
     tab.addEventListener('dragenter', (e) => {
@@ -53,19 +52,17 @@ function initTabs() {
       }
     });
 
-
     // Drag leave
     tab.addEventListener('dragleave', (e) => {
       tab.classList.remove('drag-over');
     });
-
 
     // Drop
     tab.addEventListener('drop', (e) => {
       e.preventDefault();
       tab.classList.remove('drag-over');
 
-      if (tab !== draggedElement) {
+      if (tab !== draggedElement && draggedElement) {
         const targetIndex = Array.from(tabsContainer.children).indexOf(tab);
 
         // Reorder the tabs
@@ -77,15 +74,6 @@ function initTabs() {
       }
     });
   });
-
-
-  // Add new tab
-  tabAdder.addEventListener('click', (e) => {
-    e.preventDefault();
-
-    tabCounter++;
-    tabsContainer.appendChild(newTabElement(tabCounter));
-  })
 }
 
 
@@ -101,16 +89,45 @@ function switchTab(tabName) {
 }
 
 
+function addTab() {
+  const tabsContainer = document.getElementById('tabs-container');
+  const tabContentContainer = document.getElementById('tab-content-container');
+
+  tabContentContainer.appendChild(newTabContentElement(tabCounter+1));
+  tabsContainer.appendChild(newTabElement(tabCounter+1));
+  setupTabs();
+}
+
+
 function newTabElement(id) {
   const tab = document.createElement('div');
 
-  tab.className   = 'tab';
-  tab.draggable   = 'true';
-  tab['tab-data'] = `${id}`;
-  tab.innerHTML   = `${id}`;
+  tab.className = 'tab';
+  tab.draggable = 'true';
+  tab.innerHTML = `${id}`;
+  tab.setAttribute('data-tab', `tab-${id}`);
 
   return tab;
 }
 
 
-initTabs();
+function newTabContentElement(id) {
+  const content = document.createElement('div');
+
+  content.className = 'tab-content';
+  content.id        = `tab-${id}`;
+  content.innerHTML = `<h2>Tab ${id} Content</h2><p>This is the content for tab ${id}.</p>`;
+
+  return content;
+}
+
+
+// Add new tab
+document.getElementById('tab-adder').addEventListener('click', (e) => {
+  e.preventDefault();
+  addTab();
+});
+
+
+addTab(); // Initialize with one tab
+document.querySelector('.tab').dispatchEvent(new MouseEvent('click'));
