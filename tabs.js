@@ -161,6 +161,38 @@ function newTabContentElement(id) {
 }
 
 
+function scrollUp() {
+  const tabsContainer = document.getElementById('tab-container');
+
+  if (currentTabIndex === null) return;
+
+  if (currentTabIndex > 0) {
+    currentTabIndex--;
+  } else {
+    // -1 for the add button
+    currentTabIndex = tabsContainer.children.length - 2;
+  }
+
+  switchTab(
+    tabsContainer.children[currentTabIndex + 1].getAttribute('data-tab'));
+}
+
+
+function scrollDown() {
+  const tabsContainer = document.getElementById('tab-container');
+
+  if (currentTabIndex === null) return;
+
+  if (currentTabIndex < tabsContainer.children.length - 1) {
+    currentTabIndex++;
+  } else {
+    currentTabIndex = 1; // +1 for the add button
+  }
+
+  switchTab(tabsContainer.children[currentTabIndex].getAttribute('data-tab'));
+}
+
+
 function removeTab(index) {
   const tabsContainer = document.getElementById('tab-container');
   const tabContents = document.querySelectorAll('.tab-content');
@@ -194,6 +226,17 @@ document.getElementById('tab-adder').addEventListener('click', (e) => {
   e.preventDefault();
   addTab();
 });
+
+
+document.getElementById('tab-content-container')
+  .addEventListener('wheel', (e) => {
+    if (e.deltaY < 0) {
+      scrollUp();
+    } else {
+      scrollDown();
+    }
+  }
+);
 
 
 addTab(); // Initialize with one tab
