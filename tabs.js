@@ -7,7 +7,7 @@ function setupTabs() {
   let draggedElement = null;
   let draggedIndex = null;
 
-  const tabsContainer = document.getElementById('tabs-container');
+  const tabsContainer = document.getElementById('tab-container');
   const tabs = tabsContainer.querySelectorAll('.tab');
   const tabContents = document.querySelectorAll('.tab-content');
 
@@ -93,7 +93,7 @@ function setupTabs() {
 async function renumberTabs() {
   await new Promise(resolve => setTimeout(resolve, renumberDelay));
 
-  const tabsContainer = document.getElementById('tabs-container');
+  const tabsContainer = document.getElementById('tab-container');
   const tabs = tabsContainer.querySelectorAll('.tab');
 
   tabs.forEach((tab, index) => {
@@ -115,7 +115,7 @@ function switchTab(tabName) {
 
 
 function addTab() {
-  const tabsContainer = document.getElementById('tabs-container');
+  const tabsContainer = document.getElementById('tab-container');
   const tabContentContainer = document.getElementById('tab-content-container');
 
   tabContentContainer.appendChild(newTabContentElement(tabCounter+1));
