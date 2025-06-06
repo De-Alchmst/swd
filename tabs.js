@@ -1,4 +1,7 @@
-let tabCounter = 0;
+let renumberDelay = 750;
+
+let tabCounter = 0;         // used as ID
+let currentTabIndex = null; // index in the tabs array
 
 function setupTabs() {
   let draggedElement = null;
@@ -12,7 +15,14 @@ function setupTabs() {
 
 
   // Add event listeners to each tab
+  // JS is not happy with each tab being configured seperately
+  // so I have to rewrite them all every time
   tabs.forEach((tab, index) => {
+
+    // removes previous event listeners
+    const newTab = tab.cloneNode(true);
+    tabsContainer.replaceChild(newTab, tab);
+    tab = newTab;
 
     // Click to switch tabs
     tab.addEventListener('click', (e) => {
@@ -72,8 +82,23 @@ function setupTabs() {
           tabsContainer.insertBefore(draggedElement, tab);
         }
       }
+
+      renumberTabs();
     });
   });
+}
+
+
+// renumber after a delay for visual feedback
+async function renumberTabs() {
+  await new Promise(resolve => setTimeout(resolve, renumberDelay));
+
+  const tabsContainer = document.getElementById('tabs-container');
+  const tabs = tabsContainer.querySelectorAll('.tab');
+
+  tabs.forEach((tab, index) => {
+    tab.innerHTML = `${index + 1}`;
+  })
 }
 
 
