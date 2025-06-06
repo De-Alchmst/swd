@@ -153,13 +153,14 @@ function newTabElement(id) {
 function newTabContentElement(id) {
   const content = document.createElement('div');
   const bg = document.createElement('div');
+  const tag = `tab-${id}`
 
   content.className = 'tab-content';
-  content.id        = `tab-${id}`;
+  content.id        = tag;
   content.appendChild(bg); 
 
   bg.className = 'desktop-background';
-  bindBgMenu(bg, content);
+  bindBgMenu(bg, content, tag);
 
   return content;
 }
@@ -231,17 +232,20 @@ function removeTab(index) {
   }
 }
 
-function bindBgMenu(bg, content) {
+function bindBgMenu(bg, content, tag) {
   addMouseListeners(bg, 2, [
     {
       "name": "New",
       "action": () => {
-        spawnWindow(content, "Win");
+        spawnWindow(content, "Win", tag);
       }
     }, {
       "name": "Kill",
       "action": () => {
         console.log('Kill action triggered');
+        enterSelectionMode(2, (x, y) => {
+          killWindow(x, y, tag);
+        });
       }
     }
   ]);
