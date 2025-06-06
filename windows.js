@@ -3,6 +3,7 @@ const windows = {};
 function spawnWindow(root, name, tag) {
   const win = new WinBox(name, {
     root: root,
+    class: ["no-animation"],
     border: 4,
     header: 25,
 
@@ -45,4 +46,11 @@ function killWindow(x, y, tag) {
   applyWindowPos(x, y, tag, (w) => {
     w.close();
   })
+}
+
+
+function moveWindow(x, y, tag) {
+  applyWindowPos(x, y, tag, (w) => {
+    enterMoveMode(2, x, y, w)
+  });
 }
