@@ -49,6 +49,27 @@ function killWindow(x, y, tag) {
 }
 
 
+function minimizeWindow(x, y, tag) {
+  applyWindowPos(x, y, tag, (w) => {
+    w.minimize(!w.min);
+  })
+}
+
+
+function maximizeWindow(x, y, tag) {
+  applyWindowPos(x, y, tag, (w) => {
+    w.maximize(!w.max);
+  })
+}
+
+
+function fullscreenWindow(x, y, tag) {
+  applyWindowPos(x, y, tag, (w) => {
+    w.fullscreen(!w.full);
+  })
+}
+
+
 function moveWindow(x, y, tag) {
   applyWindowPos(x, y, tag, (w) => {
     enterMoveMode(2, x, y, w)

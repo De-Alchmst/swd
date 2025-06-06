@@ -253,6 +253,27 @@ function bindBgMenu(bg, content, tag) {
           killWindow(x, y, tag);
         });
       }
+    }, {
+      "name": "Min",
+      "action": () => {
+        enterSelectionMode(2, (x, y) => {
+          minimizeWindow(x, y, tag);
+        });
+      }
+    }, {
+      "name": "Max",
+      "action": () => {
+        enterSelectionMode(2, (x, y) => {
+          maximizeWindow(x, y, tag);
+        });
+      }
+    }, {
+      "name": "Full",
+      "action": () => {
+        enterSelectionMode(2, (x, y) => {
+          fullscreenWindow(x, y, tag);
+        });
+      }
     }
   ]);
 }

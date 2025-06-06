@@ -98,8 +98,6 @@ function enterMoveMode(button, x, y, win) {
     e.preventDefault();
     e.stopPropagation();
 
-    console.log(outline.style.top)
-
     outline.style.top  = `calc(${outline.style.top}  + ${e.movementY}px)`;
     outline.style.left = `calc(${outline.style.left} + ${e.movementX}px)`;
   }
