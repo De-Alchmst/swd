@@ -1,6 +1,7 @@
 let renumberDelay = 750;
 
-let tabCounter = 0;         // used as ID
+let tabId = 0;
+let tabCounter = 0;
 let currentTabIndex = null; // index in the tabs array
 
 function setupTabs() {
@@ -10,8 +11,6 @@ function setupTabs() {
   const tabsContainer = document.getElementById('tab-container');
   const tabs = tabsContainer.querySelectorAll('.tab');
   const tabContents = document.querySelectorAll('.tab-content');
-
-  tabCounter = tabs.length;
 
 
   // Add event listeners to each tab
@@ -28,6 +27,16 @@ function setupTabs() {
     tab.addEventListener('click', (e) => {
       if (!tab.classList.contains('dragging')) {
         switchTab(tab.getAttribute('data-tab'));
+        currentTabIndex = index;
+      }
+    });
+
+    // other mouse buttons
+    tab.addEventListener('auxclick', (e) => {
+      switch (e.button) {
+        case 1: // Middle click -> close tab
+          removeTab(index);
+          break;
       }
     });
 
@@ -83,20 +92,23 @@ function setupTabs() {
         }
       }
 
-      renumberTabs();
+      renumberTabs(renumberDelay);
     });
   });
 }
 
 
 // renumber after a delay for visual feedback
-async function renumberTabs() {
-  await new Promise(resolve => setTimeout(resolve, renumberDelay));
+async function renumberTabs(delay) {
+  await new Promise(resolve => setTimeout(resolve, delay));
 
   const tabsContainer = document.getElementById('tab-container');
   const tabs = tabsContainer.querySelectorAll('.tab');
 
   tabs.forEach((tab, index) => {
+    if (tab.classList.contains('active')) {
+      currentTabIndex = index;
+    }
     tab.innerHTML = `${index + 1}`;
   })
 }
@@ -118,8 +130,10 @@ function addTab() {
   const tabsContainer = document.getElementById('tab-container');
   const tabContentContainer = document.getElementById('tab-content-container');
 
-  tabContentContainer.appendChild(newTabContentElement(tabCounter+1));
-  tabsContainer.appendChild(newTabElement(tabCounter+1));
+  tabId++;
+  tabCounter++;
+  tabContentContainer.appendChild(newTabContentElement(tabId));
+  tabsContainer.appendChild(newTabElement(tabId));
   setupTabs();
 }
 
@@ -129,7 +143,7 @@ function newTabElement(id) {
 
   tab.className = 'tab';
   tab.draggable = 'true';
-  tab.innerHTML = `${id}`;
+  tab.innerHTML = `${tabCounter}`;
   tab.setAttribute('data-tab', `tab-${id}`);
 
   return tab;
@@ -144,6 +158,34 @@ function newTabContentElement(id) {
   content.innerHTML = `<h2>Tab ${id} Content</h2><p>This is the content for tab ${id}.</p>`;
 
   return content;
+}
+
+
+function removeTab(index) {
+  const tabsContainer = document.getElementById('tab-container');
+  const tabContents = document.querySelectorAll('.tab-content');
+
+  // also contains the add button
+  if (tabsContainer.children.length <= 2) return;
+
+  tabCounter--;
+
+  // again, contains the add button
+  const tabToRemove = tabsContainer.children[index+1];
+  const contextToRemove = document.getElementById(
+    tabToRemove.getAttribute('data-tab'));
+
+  if (tabToRemove) {
+    tabsContainer.removeChild(tabToRemove);
+    tabToRemove.remove();
+    setupTabs();
+    renumberTabs(0);
+  }
+
+  // Switch to the first tab if the removed tab was active
+  if (currentTabIndex == index) {
+    switchTab(tabsContainer.children[1].getAttribute('data-tab'));
+  }
 }
 
 
