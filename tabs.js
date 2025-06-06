@@ -240,6 +240,13 @@ function bindBgMenu(bg, content, tag) {
         spawnWindow(content, "Win", tag);
       }
     }, {
+      "name": "Resize",
+      "action": () => {
+        enterSelectionMode(2, (x, y) => {
+          resizeWindow(x, y, tag);
+        });
+      }
+    }, {
       "name": "Move",
       "action": () => {
         enterSelectionMode(2, (x, y) => {

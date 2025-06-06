@@ -72,6 +72,16 @@ function fullscreenWindow(x, y, tag) {
 
 function moveWindow(x, y, tag) {
   applyWindowPos(x, y, tag, (w) => {
-    enterMoveMode(2, x, y, w)
+    enterMoveMode(2, x, y, w);
+  });
+}
+
+
+function resizeWindow(x, y, tag) {
+  applyWindowPos(x, y, tag, (w) => {
+    enterSizeMode(2, x, y, w, (nx, ny, nw, nh) => {
+      w.move(nx, ny);
+      w.resize(nw, nh);
+    });
   });
 }
