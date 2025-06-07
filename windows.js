@@ -71,7 +71,7 @@ function applyWindowPos(x, y, tag, f) {
 function killWindow(x, y, tag) {
   applyWindowPos(x, y, tag, (w) => {
     w.close();
-  })
+  });
 }
 
 
