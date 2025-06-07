@@ -16,6 +16,29 @@ function spawnWindow(x, y, width, height, name, root, tag) {
       const id = this.id;
       windows[tag] = windows[tag].filter((w) => w.id != this.id);
     },
+
+
+    // upon minimization, window still keeps it's size, which can be triggered
+    // by kill and the like.
+    // for this reason, I move it temporarily
+    onminimize: function() {
+      this['prevX'] = this.x;
+      this['prevY'] = this.y;
+
+      // cannot use this.move() here
+      this.x = -4000;
+      this.y = -4000;
+    },
+
+    onrestore: function() {
+      if (this['prevX']) {
+        // cannot assign directly here
+        this.move(this['prevX'], this['prevY']);
+
+        delete this['prevX'];
+        delete this['prevY'];
+      }
+    },
   })
 
   if (!windows[tag]) windows[tag] = [];
