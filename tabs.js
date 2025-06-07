@@ -237,7 +237,7 @@ function bindBgMenu(bg, content, tag) {
     {
       "name": "New",
       "action": () => {
-        spawnWindow(content, "Win", tag);
+        newWindow(content, "Win", tag);
       }
     }, {
       "name": "Resize",

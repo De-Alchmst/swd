@@ -127,7 +127,7 @@ function enterMoveMode(button, x, y, win) {
 }
 
 
-function enterSizeMode(button, x, y, win, onSize) {
+function enterSizeMode(button, onSize) {
   // Create overlay to capture all clicks and change cursor
   const overlay = document.createElement('div');
   overlay.style.cssText = `

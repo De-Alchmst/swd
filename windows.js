@@ -1,12 +1,16 @@
 const windows = {};
 
-function spawnWindow(root, name, tag) {
+function spawnWindow(x, y, width, height, name, root, tag) {
   const win = new WinBox(name, {
     root: root,
     class: ["no-animation"],
     border: 4,
     header: 25,
-
+    x: x,
+    y: y,
+    width: width,
+    height: height,
+    
     onclose: function(force) {
       // remove from windows
       const id = this.id;
@@ -20,6 +24,7 @@ function spawnWindow(root, name, tag) {
   windows[tag].push(win);
 
   console.log(windows[tag])
+  return win;
 }
 
 
@@ -79,9 +84,16 @@ function moveWindow(x, y, tag) {
 
 function resizeWindow(x, y, tag) {
   applyWindowPos(x, y, tag, (w) => {
-    enterSizeMode(2, x, y, w, (nx, ny, nw, nh) => {
+    enterSizeMode(2, (nx, ny, nw, nh) => {
       w.move(nx, ny);
       w.resize(nw, nh);
     });
+  });
+}
+
+
+function newWindow(root, name, tag) {
+  enterSizeMode(2, (x, y, w, h) => {
+    spawnWindow(x, y, w, h, name, root, tag);
   });
 }
