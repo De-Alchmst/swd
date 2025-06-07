@@ -14,7 +14,6 @@ function spawnWindow(x, y, width, height, name, root, tag) {
     onclose: function(force) {
       // remove from windows
       const id = this.id;
-      console.log()
       windows[tag] = windows[tag].filter((w) => w.id != this.id);
     },
   })
@@ -23,7 +22,6 @@ function spawnWindow(x, y, width, height, name, root, tag) {
 
   windows[tag].push(win);
 
-  console.log(windows[tag])
   return win;
 }
 
@@ -77,7 +75,10 @@ function fullscreenWindow(x, y, tag) {
 
 function moveWindow(x, y, tag) {
   applyWindowPos(x, y, tag, (w) => {
-    enterMoveMode(2, x, y, w);
+    enterMoveMode(2, x, y, w.x, w.y, w.width, w.height, (nx, ny) => {
+      w.move(nx, ny);
+      w.focus();
+    });
   });
 }
 
@@ -87,6 +88,7 @@ function resizeWindow(x, y, tag) {
     enterSizeMode(2, (nx, ny, nw, nh) => {
       w.move(nx, ny);
       w.resize(nw, nh);
+      w.focus();
     });
   });
 }

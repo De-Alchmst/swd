@@ -49,7 +49,8 @@ function enterSelectionMode(button, onSelect) {
 }
 
 
-function enterMoveMode(button, x, y, win) {
+function enterMoveMode(button, mouseX, mouseY,
+                       origX, origY, width, height, onMove) {
   // Create overlay to capture all clicks and change cursor
   const overlay = document.createElement('div');
   overlay.style.cssText = `
@@ -66,14 +67,18 @@ function enterMoveMode(button, x, y, win) {
   const outline = document.createElement('div');
   outline.style.cssText = `
     position: fixed;
-    top: ${win.y}px;
-    left: ${win.x}px;
-    width: calc(${win.width}px - 8px);
-    height: calc(${win.height}px - 8px);
+    top: ${origY}px;
+    left: ${origX}px;
+    width: calc(${width}px - 8px);
+    height: calc(${height}px - 8px);
     z-index: 8888;
     background: transparent;
     border: 4px solid crimson;
   `;
+
+  // offset of mouse from window position
+  const offsetX = mouseX - origX;
+  const offsetY = mouseY - origY;
   
   // Click handler to capture selected element
   const handleClick = (e) => {
@@ -87,10 +92,10 @@ function enterMoveMode(button, x, y, win) {
     
     // Clean up and call callback
     cleanup();
-    const dx = e.clientX - x;
-    const dy = e.clientY - y;
+    const dx = e.clientX - mouseX;
+    const dy = e.clientY - mouseY;
 
-    win.move(win.x + dx, win.y + dy);
+    onMove(origX + dx, origY + dy);
   };
 
   // move the outline
@@ -98,8 +103,8 @@ function enterMoveMode(button, x, y, win) {
     e.preventDefault();
     e.stopPropagation();
 
-    outline.style.top  = `calc(${outline.style.top}  + ${e.movementY}px)`;
-    outline.style.left = `calc(${outline.style.left} + ${e.movementX}px)`;
+    outline.style.top  = `${e.clientY - offsetY}px`;
+    outline.style.left = `${e.clientX - offsetX}px`;
   }
 
   
@@ -181,10 +186,7 @@ function enterSizeMode(button, onSize) {
 
     // Clean up and call callback
     cleanup();
-    let x;
-    let y;
-    let w;
-    let h;
+    let x, y, w, h;
 
     if (point[0] > e.clientX) {
       w = point[0] - e.clientX;
@@ -202,7 +204,9 @@ function enterSizeMode(button, onSize) {
       y = point[1];
     }
 
-    console.log(x,y,w,h)
+    // minimal size
+    if (w < 150) w = 150;
+    if (h < 60) h = 60;
 
     onSize(x, y, w, h);
   };
