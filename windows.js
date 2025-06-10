@@ -17,7 +17,6 @@ function spawnWindow(x, y, width, height, name, root, tag) {
       windows[tag] = windows[tag].filter((w) => w.id != this.id);
     },
 
-
     // upon minimization, window still keeps it's size, which can be triggered
     // by kill and the like.
     // for this reason, I move it temporarily

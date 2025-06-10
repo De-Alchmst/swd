@@ -213,18 +213,18 @@ function enterSizeMode(button, onSize) {
 
     if (point[0] > e.clientX) {
       outline.style.left = `${e.clientX}px`;
-      outline.style.width = `${point[0] - e.clientX}px`;
+      outline.style.width = `${point[0] - e.clientX-8}px`;
     } else {
       outline.style.left = `${point[0]}px`;
-      outline.style.width = `${e.clientX - point[0]}px`;
+      outline.style.width = `${e.clientX - point[0]-8}px`;
     }
 
     if (point[1] > e.clientY) {
       outline.style.top = `${e.clientY}px`;
-      outline.style.height = `${point[1] - e.clientY}px`;
+      outline.style.height = `${point[1] - e.clientY-8}px`;
     } else {
       outline.style.top = `${point[1]}px`;
-      outline.style.height = `${e.clientY - point[1]}px`;
+      outline.style.height = `${e.clientY - point[1]-8}px`;
     }
   };
   
