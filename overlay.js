@@ -1,5 +1,4 @@
-function enterSelectionMode(button, onSelect) {
-  // Create overlay to capture all clicks and change cursor
+function createOverlay() {
   const overlay = document.createElement('div');
   overlay.style.cssText = `
     position: fixed;
@@ -12,15 +11,80 @@ function enterSelectionMode(button, onSelect) {
     background: transparent;
   `;
   
-  // Click handler to capture selected element
+  // Prevent context menu
+  overlay.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+  });
+  
+  return overlay;
+}
+
+
+function createOutline(styles = {}) {
+  const outline = document.createElement('div');
+  const defaultStyles = {
+    position: 'fixed',
+    zIndex: '8888',
+    background: 'transparent',
+    border: '4px solid crimson'
+  };
+  
+  const finalStyles = { ...defaultStyles, ...styles };
+  outline.style.cssText = Object.entries(finalStyles)
+    .map(([key, value]) => `${key.replace(/([A-Z])/g, '-$1')
+                           .toLowerCase()}: ${value}`)
+    .join('; ');
+  
+  return outline;
+}
+
+
+function setupOverlayMode(config) {
+  const { 
+    button, 
+    events = {}, 
+    createElements = () => ([]), 
+    onComplete 
+  } = config;
+  
+  const overlay = createOverlay();
+  const elements = createElements();
+  const allElements = [overlay, ...elements];
+  
+  // Cleanup function
+  const cleanup = () => {
+    // Remove all event listeners
+    Object.entries(events).forEach(([eventName, handler]) => {
+      overlay.removeEventListener(eventName, handler);
+    });
+    
+    // Remove all elements from DOM
+    allElements.forEach(el => {
+      if (el.parentNode) {
+        el.parentNode.removeChild(el);
+      }
+    });
+  };
+  
+  // Add event listeners
+  Object.entries(events).forEach(([eventName, handler]) => {
+    overlay.addEventListener(eventName, handler);
+  });
+  
+  // Add elements to DOM
+  elements.forEach(el => document.body.appendChild(el));
+  document.body.appendChild(overlay);
+  
+  return cleanup;
+}
+
+
+function enterSelectionMode(button, onSelect) {
   const handleClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
 
     if (e.button != button) return;
-    
-    // Temporarily hide overlay to get element underneath
-    overlay.style.display = 'none';
     
     // Clean up and call callback
     cleanup();
@@ -29,66 +93,28 @@ function enterSelectionMode(button, onSelect) {
     }
   };
   
-  // Cleanup function
-  const cleanup = () => {
-    overlay.removeEventListener('auxclick', handleClick);
-    document.body.removeChild(overlay);
-  };
-  
-  // Add event listeners
-  overlay.addEventListener('contextmenu', (e) => {
-    e.preventDefault();
+  const cleanup = setupOverlayMode({
+    button,
+    events: {
+      auxclick: handleClick
+    },
+    onComplete: onSelect
   });
-  overlay.addEventListener('auxclick', handleClick);
   
-  // Add overlay to DOM
-  document.body.appendChild(overlay);
-  
-  // Return cleanup function in case you want to cancel programmatically
   return cleanup;
 }
 
 
-function enterMoveMode(button, mouseX, mouseY,
-                       origX, origY, width, height, onMove) {
-  // Create overlay to capture all clicks and change cursor
-  const overlay = document.createElement('div');
-  overlay.style.cssText = `
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    cursor: crosshair;
-    z-index: 9999;
-    background: transparent;
-  `;
-
-  const outline = document.createElement('div');
-  outline.style.cssText = `
-    position: fixed;
-    top: ${origY}px;
-    left: ${origX}px;
-    width: calc(${width}px - 8px);
-    height: calc(${height}px - 8px);
-    z-index: 8888;
-    background: transparent;
-    border: 4px solid crimson;
-  `;
-
-  // offset of mouse from window position
+function enterMoveMode(button, mouseX, mouseY, origX, origY,
+                       width, height, onMove) {
   const offsetX = mouseX - origX;
   const offsetY = mouseY - origY;
   
-  // Click handler to capture selected element
   const handleClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
 
     if (e.button != button) return;
-    
-    // Temporarily hide overlay to get element underneath
-    overlay.style.display = 'none';
     
     // Clean up and call callback
     cleanup();
@@ -98,69 +124,42 @@ function enterMoveMode(button, mouseX, mouseY,
     onMove(origX + dx, origY + dy);
   };
 
-  // move the outline
   const handleMove = (e) => {
     e.preventDefault();
     e.stopPropagation();
 
-    outline.style.top  = `${e.clientY - offsetY}px`;
+    outline.style.top = `${e.clientY - offsetY}px`;
     outline.style.left = `${e.clientX - offsetX}px`;
-  }
-
-  
-  // Cleanup function
-  const cleanup = () => {
-    overlay.removeEventListener('mousemove', handleMove);
-    overlay.removeEventListener('auxclick', handleClick);
-    document.body.removeChild(outline);
-    document.body.removeChild(overlay);
   };
   
-  // Add event listeners
-  overlay.addEventListener('contextmenu', (e) => {
-    e.preventDefault();
+  let outline;
+  
+  const cleanup = setupOverlayMode({
+    button,
+    events: {
+      auxclick: handleClick,
+      mousemove: handleMove
+    },
+    createElements: () => {
+      outline = createOutline({
+        top: `${origY}px`,
+        left: `${origX}px`,
+        width: `calc(${width}px - 8px)`,
+        height: `calc(${height}px - 8px)`
+      });
+      return [outline];
+    },
+    onComplete: onMove
   });
-  overlay.addEventListener('mousemove', handleMove);
-  overlay.addEventListener('auxclick', handleClick);
   
-  // Add overlay to DOM
-  document.body.appendChild(outline);
-  document.body.appendChild(overlay);
-  
-  // Return cleanup function in case you want to cancel programmatically
   return cleanup;
 }
 
 
 function enterSizeMode(button, onSize) {
-  // Create overlay to capture all clicks and change cursor
-  const overlay = document.createElement('div');
-  overlay.style.cssText = `
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    cursor: crosshair;
-    z-index: 9999;
-    background: transparent;
-  `;
-
-  const outline = document.createElement('div');
-  outline.style.cssText = `
-    position: fixed;
-    top: -100;
-    left: -100;
-    width: 0;
-    height: 0;
-    z-index: 8888;
-    background: transparent;
-    border: 4px solid crimson;
-  `;
-
   let point = null;
+  let outline;
   
-  // Click handler to capture selected element
   const handleDown = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -168,8 +167,7 @@ function enterSizeMode(button, onSize) {
     if (e.button != button) return;
 
     point = [e.clientX, e.clientY];
-
-    outline.style.top  = `${e.clientY}px`;
+    outline.style.top = `${e.clientY}px`;
     outline.style.left = `${e.clientX}px`;
   };
 
@@ -179,10 +177,6 @@ function enterSizeMode(button, onSize) {
 
     if (e.button != button) return;
     if (!point) return;
-
-
-    // Temporarily hide overlay to get element underneath
-    overlay.style.display = 'none';
 
     // Clean up and call callback
     cleanup();
@@ -211,7 +205,6 @@ function enterSizeMode(button, onSize) {
     onSize(x, y, w, h);
   };
 
-  // move the outline
   const handleMove = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -220,10 +213,10 @@ function enterSizeMode(button, onSize) {
 
     if (point[0] > e.clientX) {
       outline.style.left = `${e.clientX}px`;
-      outline.style.width  = `${point[0] - e.clientX}px`;
+      outline.style.width = `${point[0] - e.clientX}px`;
     } else {
       outline.style.left = `${point[0]}px`;
-      outline.style.width  = `${e.clientX - point[0]}px`;
+      outline.style.width = `${e.clientX - point[0]}px`;
     }
 
     if (point[1] > e.clientY) {
@@ -234,29 +227,25 @@ function enterSizeMode(button, onSize) {
       outline.style.height = `${e.clientY - point[1]}px`;
     }
   };
-
   
-  // Cleanup function
-  const cleanup = () => {
-    overlay.removeEventListener('mousemove', handleMove);
-    overlay.removeEventListener('mousedown', handleDown);
-    overlay.removeEventListener('mouseup', handleUp);
-    document.body.removeChild(outline);
-    document.body.removeChild(overlay);
-  };
-  
-  // Add event listeners
-  overlay.addEventListener('contextmenu', (e) => {
-    e.preventDefault();
+  const cleanup = setupOverlayMode({
+    button,
+    events: {
+      mousedown: handleDown,
+      mouseup: handleUp,
+      mousemove: handleMove
+    },
+    createElements: () => {
+      outline = createOutline({
+        top: '-100px',
+        left: '-100px',
+        width: '0',
+        height: '0'
+      });
+      return [outline];
+    },
+    onComplete: onSize
   });
-  overlay.addEventListener('mousemove', handleMove);
-  overlay.addEventListener('mousedown', handleDown);
-  overlay.addEventListener('mouseup', handleUp);
   
-  // Add overlay to DOM
-  document.body.appendChild(outline);
-  document.body.appendChild(overlay);
-  
-  // Return cleanup function in case you want to cancel programmatically
   return cleanup;
 }
