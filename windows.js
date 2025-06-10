@@ -10,7 +10,7 @@ function spawnWindow(x, y, width, height, name, root, tag) {
     y: y,
     width: width,
     height: height,
-    
+
     onclose: function(force) {
       // remove from windows
       const id = this.id;
@@ -85,6 +85,7 @@ function minimizeWindow(x, y, tag) {
 function maximizeWindow(x, y, tag) {
   applyWindowPos(x, y, tag, (w) => {
     w.maximize(!w.max);
+    w.focus();
   })
 }
 
@@ -92,6 +93,7 @@ function maximizeWindow(x, y, tag) {
 function fullscreenWindow(x, y, tag) {
   applyWindowPos(x, y, tag, (w) => {
     w.fullscreen(!w.full);
+    w.focus();
   })
 }
 

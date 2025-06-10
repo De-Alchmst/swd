@@ -126,6 +126,17 @@ function switchTab(tabName) {
 }
 
 
+function bindScrollSwitching(elem) {
+  elem.addEventListener('wheel', (e) => {
+    if (e.deltaY < 0) {
+      scrollUp();
+    } else {
+      scrollDown();
+    }
+  });
+}
+
+
 function addTab() {
   const tabsContainer = document.getElementById('tab-container');
   const tabContentContainer = document.getElementById('tab-content-container');
@@ -161,6 +172,7 @@ function newTabContentElement(id) {
 
   bg.className = 'desktop-background';
   bindBgMenu(bg, content, tag);
+  bindScrollSwitching(bg);
 
   return content;
 }
@@ -291,18 +303,8 @@ document.getElementById('tab-adder').addEventListener('click', (e) => {
   e.preventDefault();
   addTab();
 });
-
-
-document.getElementById('tab-content-container')
-  .addEventListener('wheel', (e) => {
-    if (e.deltaY < 0) {
-      scrollUp();
-    } else {
-      scrollDown();
-    }
-  }
-);
-
+// switch to scroll even on tab bar itself
+bindScrollSwitching(document.getElementById('tab-container'));
 
 addTab(); // Initialize with one tab
 document.querySelector('.tab').dispatchEvent(new MouseEvent('click'));
